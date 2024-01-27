@@ -6,6 +6,8 @@ import (
 	"github.com/racg0092/rhombifer/utils"
 )
 
+//todo: Leave the user decide weather to implement of just print  available commands if no args
+
 func InputValidation() error {
 
 	args := os.Args[1:]
