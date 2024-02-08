@@ -65,7 +65,7 @@ func Root() *Command {
 	return root
 }
 
-func UseBuiltInHelp() {
+func UseBuiltInHelp(short, long *string) Command {
 	help := Command{
 		Name:      "help",
 		ShortDesc: "Displays help information",
@@ -88,7 +88,13 @@ func UseBuiltInHelp() {
 		},
 	}
 
-	if root != nil {
-		root.AddSub(help)
+	if short != nil {
+		help.ShortDesc = *short
 	}
+
+	if long != nil {
+		help.LongDesc = *long
+	}
+
+	return help
 }

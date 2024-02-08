@@ -18,9 +18,10 @@ type Flag struct {
 
 	Required bool
 
+	//todo: not sure if to keep it
+	// to define how the values would be parse
 	ValuesDilimiter string
-}
 
-func (f Flag) ShortHand() string {
-	return f.Name[0:1]
+	// when true child command has visibility to the flag
+	Inherited bool
 }
