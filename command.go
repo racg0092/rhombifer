@@ -1,6 +1,9 @@
 package rhombifer
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 type Run func(args []string) error
 
@@ -36,17 +39,56 @@ func (cmd *Command) AddSub(command Command) {
 	cmd.Subs = append(cmd.Subs, command)
 }
 
+func (cmd Command) ExecCommand(name string, args []string) {
+	for _, sub := range cmd.Subs {
+		if sub.Name == name {
+			if sub.Run != nil {
+				sub.Run(args)
+			}
+		}
+	}
+}
+
 // Sets the root command
-func SetRoot(cmd *Command) *Command {
+func SetRoot(cmd *Command) {
 	if cmd != nil {
+		cmd.Root = true
 		// for thread safety
 		once.Do(func() {
 			root = cmd
 		})
 	}
+}
+
+// Get Root Command
+func Root() *Command {
 	return root
 }
 
-func Root() *Command {
-	return root
+func UseBuiltInHelp() {
+	help := Command{
+		Name:      "help",
+		ShortDesc: "Displays help information",
+		LongDesc: `
+		Displays help information for the specified command or the root command if no command is specified.
+		`,
+		Leaf: true,
+		Run: func(args []string) error {
+
+			if len(args) == 0 {
+				fmt.Println(root.Name)
+				if root.LongDesc != "" {
+					fmt.Printf("\n%s", root.LongDesc)
+				} else {
+					fmt.Printf("\n%s", root.ShortDesc)
+				}
+			}
+
+			return nil
+		},
+	}
+
+	if root != nil {
+		root.AddSub(help)
+	}
 }
