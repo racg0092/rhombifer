@@ -24,4 +24,7 @@ type Flag struct {
 
 	// when true child command has visibility to the flag
 	Inherited bool
+	
+	// if the flag required a value or not
+	RequiresValue bool
 }

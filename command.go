@@ -19,8 +19,10 @@ type Command struct {
 
 	// flags if any
 	Flags []Flag
-	Subs  []Command
-	Run   Run
+
+	Subs []Command
+
+	Run Run
 
 	Root bool
 	Leaf bool
@@ -36,17 +38,38 @@ func (cmd *Command) AddFlag(f Flag) {
 }
 
 func (cmd *Command) AddSub(command Command) {
+	if cmd == nil {
+		c := Command{}
+		SetRoot(&c)
+		cmd.Subs = append(cmd.Subs, command)
+		return
+	}
 	cmd.Subs = append(cmd.Subs, command)
 }
 
-func (cmd Command) ExecCommand(name string, args []string) {
+func (cmd Command) ExecCommand(name string, args []string) error {
+	found := false
 	for _, sub := range cmd.Subs {
 		if sub.Name == name {
-			if sub.Run != nil {
-				sub.Run(args)
+			found = true
+			if sub.Run == nil {
+				return fmt.Errorf("Command %s does not have a run function", name)
 			}
+
+			err := sub.Run(args)
+
+			if err != nil {
+				return err
+			}
+
 		}
 	}
+
+	if !found {
+		return fmt.Errorf("Command %s does not exist", name)
+	}
+
+	return nil
 }
 
 // Sets the root command
@@ -63,38 +86,4 @@ func SetRoot(cmd *Command) {
 // Get Root Command
 func Root() *Command {
 	return root
-}
-
-func UseBuiltInHelp(short, long *string) Command {
-	help := Command{
-		Name:      "help",
-		ShortDesc: "Displays help information",
-		LongDesc: `
-		Displays help information for the specified command or the root command if no command is specified.
-		`,
-		Leaf: true,
-		Run: func(args []string) error {
-
-			if len(args) == 0 {
-				fmt.Println(root.Name)
-				if root.LongDesc != "" {
-					fmt.Printf("\n%s", root.LongDesc)
-				} else {
-					fmt.Printf("\n%s", root.ShortDesc)
-				}
-			}
-
-			return nil
-		},
-	}
-
-	if short != nil {
-		help.ShortDesc = *short
-	}
-
-	if long != nil {
-		help.LongDesc = *long
-	}
-
-	return help
 }
