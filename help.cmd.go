@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	rhombitext "github.com/racg0092/rhombifer/text"
+	rhombitext "github.com/racg0092/rhombifer/pkg/text"
 )
 
 func UseBuiltInHelp(short, long *string) Command {
