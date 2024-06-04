@@ -1,0 +1,5 @@
+package builtin
+
+func ExampleBuiltInHelp() {
+
+}

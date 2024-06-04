@@ -1,3 +1,4 @@
+// A flexible and simple unopinionated library for cli tools
 package rhombifer
 
 import (
@@ -34,7 +35,7 @@ func Start() error {
 		return nil
 	}
 
-	if err := root.Run(args); err != nil {
+	if err := root.Run(args...); err != nil {
 		return err
 	}
 

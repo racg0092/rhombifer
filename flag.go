@@ -20,11 +20,8 @@ type Flag struct {
 
 	//todo: not sure if to keep it
 	// to define how the values would be parse
-	ValuesDilimiter string
+	ValuesDilimiter []string
 
-	// when true child command has visibility to the flag
-	Inherited bool
-	
 	// if the flag required a value or not
 	RequiresValue bool
 }

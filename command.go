@@ -1,11 +1,10 @@
 package rhombifer
 
 import (
-	"fmt"
 	"sync"
 )
 
-type Run func(args []string) error
+type Run func(args ...string) error
 
 type Command struct {
 	// command name
@@ -20,7 +19,7 @@ type Command struct {
 	// flags if any
 	Flags []Flag
 
-	Subs []Command
+	Subs map[string]Command
 
 	Run Run
 
@@ -37,42 +36,24 @@ func (cmd *Command) AddFlag(f Flag) {
 	cmd.Flags = append(cmd.Flags, f)
 }
 
+// Adds a sub command to a command
 func (cmd *Command) AddSub(command Command) {
 	if cmd == nil {
-		c := Command{}
-		SetRoot(&c)
-		cmd.Subs = append(cmd.Subs, command)
-		return
+		panic("attempting to set sub command to a nil reference")
 	}
-	cmd.Subs = append(cmd.Subs, command)
+	cmd.Subs[command.Name] = command
 }
 
+// Todo refactor execute should only exeute the current command Run function and pipe the output to its children
 func (cmd Command) ExecCommand(name string, args []string) error {
-	found := false
-	for _, sub := range cmd.Subs {
-		if sub.Name == name {
-			found = true
-			if sub.Run == nil {
-				return fmt.Errorf("Command %s does not have a run function", name)
-			}
-
-			err := sub.Run(args)
-
-			if err != nil {
-				return err
-			}
-
-		}
+	if cmd.Run != nil {
+		cmd.Run()
 	}
-
-	if !found {
-		return fmt.Errorf("Command %s does not exist", name)
-	}
-
 	return nil
 }
 
-// Sets the root command
+// Takes in a pointer to `cmd` and sets it as the root command. The **root** command is only set once
+// for the application runtime. It means that `root` will be set only the first time this funtion is call
 func SetRoot(cmd *Command) {
 	if cmd != nil {
 		cmd.Root = true
@@ -83,7 +64,15 @@ func SetRoot(cmd *Command) {
 	}
 }
 
-// Get Root Command
+// Returns root command. If root has not been initialized it creates a new empty [Command]
+// and returns the pointer
 func Root() *Command {
+	if root == nil {
+		c := Command{
+			Root: true,
+			Subs: make(map[string]Command),
+		}
+		SetRoot(&c)
+	}
 	return root
 }

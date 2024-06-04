@@ -1,9 +1,0 @@
-Command Parsing & Exceition:
-  ☐ Brain storm and figure out the best way to take the input and parse it.
-    ☐ Are we implementingo JIT parsing of the arguments checking for sub commands and flags
-    ☐ Are we parsing the entire command while looking ahead from what is available and then excuting it
-    List benefist for both ways and options and then decide one
-
-
-Archive:
-

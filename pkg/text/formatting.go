@@ -1,3 +1,6 @@
+// Packag text provides some utilities functions for formating text
+//
+// You can add color boldness etc..
 package text
 
 import "fmt"
