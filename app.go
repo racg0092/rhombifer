@@ -1,7 +1,7 @@
-// A flexible and simple unopinionated library for cli tools
 package rhombifer
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -10,34 +10,27 @@ type App struct {
 
 // var apponce sync.Once
 
-// in case the application does not go the route of a single root command and has multiple root commands
-// this will implement a way to have all those command join somehow
-
+// Kick starts the CLI with certain expectations. For more flexebility handle the start of the application your self
+// This may change if future versions
 func Start() error {
 	args := os.Args[1:]
 
 	if len(args) == 0 {
 		if root != nil {
-			if err := root.ExecCommand("help", nil); err != nil {
+			if err := ExecCommand("help"); err != nil {
 				return err
 			}
+			return nil
 		}
-		return nil
 	}
 
+	// Expections are to change the control structure to allow for multiple roots
 	if root == nil {
-		return nil
+		return fmt.Errorf("Root command expected got %v", root)
 	}
 
-	//todo: multiple roots command path structure needs to be implemented
-
-	if root.Run == nil {
-		return nil
-	}
-
-	if err := root.Run(args...); err != nil {
+	if err := ExecCommand(args[0], args[1:]...); err != nil {
 		return err
 	}
-
 	return nil
 }

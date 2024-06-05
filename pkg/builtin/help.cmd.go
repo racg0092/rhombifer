@@ -19,7 +19,7 @@ import (
 //
 //   - `short` default = "help"
 //   - `long` default = "Displays help information"
-func UseBuiltInHelp(short, long *string) rhombifer.Command {
+func HelpCommand(short, long *string) rhombifer.Command {
 	help := rhombifer.Command{
 		Name:      "help",
 		ShortDesc: "Displays help information",
