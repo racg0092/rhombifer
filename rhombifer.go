@@ -16,6 +16,7 @@ var once sync.Once
 func SetRoot(cmd *Command) {
 	if cmd != nil {
 		cmd.Root = true
+		cmd.Subs = make(map[string]Command)
 		// for thread safety
 		once.Do(func() {
 			root = cmd
