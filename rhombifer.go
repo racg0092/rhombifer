@@ -50,5 +50,8 @@ func ExecCommand(cmd string, args ...string) error {
 	if !found {
 		return fmt.Errorf("Command %s was not found", cmd)
 	}
+	if subcommand.Run == nil {
+		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
+	}
 	return subcommand.Run(args...)
 }
