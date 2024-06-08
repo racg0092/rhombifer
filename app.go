@@ -32,5 +32,6 @@ func Start() error {
 	if err := ExecCommand(args[0], args[1:]...); err != nil {
 		return err
 	}
+
 	return nil
 }

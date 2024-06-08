@@ -1,5 +1,7 @@
 package rhombifer
 
+import "github.com/racg0092/rhombifer/pkg/models"
+
 type Run func(args ...string) error
 
 type Command struct {
@@ -12,8 +14,10 @@ type Command struct {
 	// Long command description
 	LongDesc string
 
+	RequiredCommands []string
+
 	// flags if any
-	Flags []Flag
+	Flags map[string]models.Flag
 
 	// Sub commands for this command
 	Subs map[string]Command
@@ -29,8 +33,8 @@ type Command struct {
 }
 
 // Adds a flag to the a command
-func (cmd *Command) AddFlag(f Flag) {
-	cmd.Flags = append(cmd.Flags, f)
+func (cmd *Command) AddFlag(f models.Flag) {
+	cmd.Flags[f.Name] = f
 }
 
 // Adds a sub command to a command

@@ -3,6 +3,7 @@ package rhombifer
 
 import (
 	"fmt"
+	"github.com/racg0092/rhombifer/pkg/models"
 	"sync"
 )
 
@@ -16,7 +17,12 @@ var once sync.Once
 func SetRoot(cmd *Command) {
 	if cmd != nil {
 		cmd.Root = true
-		cmd.Subs = make(map[string]Command)
+		if cmd.Subs == nil {
+			cmd.Subs = make(map[string]Command)
+		}
+		if cmd.Flags == nil {
+			cmd.Flags = make(map[string]models.Flag)
+		}
 		// for thread safety
 		once.Do(func() {
 			root = cmd
@@ -28,9 +34,7 @@ func SetRoot(cmd *Command) {
 // and returns the pointer
 func Root() *Command {
 	if root == nil {
-		c := Command{
-			Subs: make(map[string]Command),
-		}
+		c := Command{}
 		SetRoot(&c)
 	}
 	return root
@@ -52,6 +56,14 @@ func ExecCommand(cmd string, args ...string) error {
 	}
 	if subcommand.Run == nil {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
+	}
+
+	if subcommand.RequiredCommands != nil {
+		if len(args) == 0 {
+			return fmt.Errorf("This command (%s) requires flags. Please check the commands docs", subcommand.Name)
+		}
+		//todo: check if the flags present are valid
+
 	}
 	return subcommand.Run(args...)
 }

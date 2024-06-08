@@ -1,27 +1,25 @@
-package rhombifer
+package models
 
 type Flag struct {
 	// flag name
 	Name string
 
-	// short drescriptio
+	//Shot Desctiption
 	Short string
 
-	// long description
+	// Long Description
 	Long string
 
-	// short format
+	// Short Format for flag if any
 	ShortFormat string
 
-	// Long Format
-	LongFormat string
-
+	// Is this a require flag
 	Required bool
 
 	//todo: not sure if to keep it
 	// to define how the values would be parse
 	ValuesDilimiter []string
 
-	// if the flag required a value or not
+	// Does this flag requires a value
 	RequiresValue bool
 }
