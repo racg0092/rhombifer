@@ -22,4 +22,6 @@ type Flag struct {
 
 	// Does this flag requires a value
 	RequiresValue bool
+
+	Values []string
 }

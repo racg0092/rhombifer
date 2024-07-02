@@ -14,10 +14,10 @@ type Command struct {
 	// Long command description
 	LongDesc string
 
-	RequiredCommands []string
+	RequiredFlags []string
 
 	// flags if any
-	Flags map[string]models.Flag
+	Flags []models.Flag
 
 	// Sub commands for this command
 	Subs map[string]Command
@@ -34,7 +34,10 @@ type Command struct {
 
 // Adds a flag to the a command
 func (cmd *Command) AddFlag(f models.Flag) {
-	cmd.Flags[f.Name] = f
+	if f.RequiresValue && f.Values == nil {
+		f.Values = make([]string, 0)
+	}
+	cmd.Flags = append(cmd.Flags, f)
 }
 
 // Adds a sub command to a command

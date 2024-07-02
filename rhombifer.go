@@ -21,7 +21,7 @@ func SetRoot(cmd *Command) {
 			cmd.Subs = make(map[string]Command)
 		}
 		if cmd.Flags == nil {
-			cmd.Flags = make(map[string]models.Flag)
+			cmd.Flags = make([]models.Flag, 0)
 		}
 		// for thread safety
 		once.Do(func() {
@@ -58,7 +58,7 @@ func ExecCommand(cmd string, args ...string) error {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
 	}
 
-	if subcommand.RequiredCommands != nil {
+	if subcommand.RequiredFlags != nil {
 		if len(args) == 0 {
 			return fmt.Errorf("This command (%s) requires flags. Please check the commands docs", subcommand.Name)
 		}
