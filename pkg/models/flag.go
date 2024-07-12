@@ -14,6 +14,7 @@ type Flag struct {
 	ShortFormat string
 
 	// Is this a require flag
+	// May remove this and add a require flags to the command itself
 	Required bool
 
 	//todo: not sure if to keep it
@@ -23,5 +24,9 @@ type Flag struct {
 	// Does this flag requires a value
 	RequiresValue bool
 
+	// Defines if the flag takes one value or multiple values
+	SingleValue bool
+
+	// Flag values parsed from the current command being run
 	Values []string
 }

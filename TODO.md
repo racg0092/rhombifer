@@ -4,10 +4,12 @@ Priority:
   - [x] Simplify design
 
 Design:
-  - [ ] Male the run function more dynamic
 
 
-
+Features:
+  - [ ] Flag Parsing
+    - [x] Short Hand Multi Flags (-rfh) should not allow for values
+    - [x] Parse values when single short hand
 
 
 

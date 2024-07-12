@@ -14,34 +14,28 @@ const (
 // Looks up flags in the args provided if any is found a map of runable flags (flr) is returned.
 // The function will stop looking for flags if it reaches the end of slice of args or runs into
 // a sub command
-func FlagsLookup(flags []models.Flag, args ...string) (flr []models.Flag, err error) {
+func FlagsLookup(flags []models.Flag, args ...string) (flr []*models.Flag, err error) {
 	if flags == nil || len(flags) <= 0 {
 		return nil, fmt.Errorf("Flags is either nil or empty")
 	}
-	flr = make([]models.Flag, 0)
-	// i need to change this to a index loop instead of a iterator
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		if strings.HasPrefix(a, "-") && !strings.HasPrefix(a, "--") {
-			a = a[1:]
-			fmt.Println(a)
-			for _, shorthand := range a {
-				s := string(shorthand)
-				flag := FindOne(flags, s, ShortFlag)
-				if flag.Name == "" {
-					return nil, fmt.Errorf("Unrecognized flag %s", s)
-				}
-				LookUpFlagValues(&flag, i, args[i:]...)
-				flr = append(flr, flag)
+			if len(a) == 1 {
+				return nil, fmt.Errorf("Shorthand - has not follow up flag identifier")
 			}
+			idx, err := parseShortHand(a[1:], flags, args[i+1:], &flr, i)
+			if err != nil {
+				return nil, err
+			}
+			i = idx
 		} else if strings.HasPrefix(a, "--") {
 			a = a[2:]
-			flag := FindOne(flags, a, LongFlag)
-			if flag.Name == "" {
-				return nil, fmt.Errorf("Unrecognized flag %s", a)
+			idx, err := parseLongHand(a, flags, args[i+1:], &flr, i)
+			if err != nil {
+				return nil, err
 			}
-			// check for value and extract if need be
-			flr = append(flr, flag)
+			i = idx
 		} else {
 			break
 		}
@@ -49,9 +43,51 @@ func FlagsLookup(flags []models.Flag, args ...string) (flr []models.Flag, err er
 	return flr, nil
 }
 
+// Handles parsing for a shothand flags. It takes in `shortHands` which the flag it can be **-a** or **-abc**. If it is a multi value
+// shortHand flag then the value look up is skipped. It takes in the `flags` found in the command if any, the `args` which is the raw
+// input string after the flag has been parsed out. A pointer to `foundFlags` which will create a slice of pointers to the `flags` only
+// if it is found. The `index` represenst the position in the `args` input it used yo move the pointer in the loop to avoid parsing values as
+// flags if they have already been parsed and assign to a flag
+func parseShortHand(
+	shortHands string,
+	flags []models.Flag,
+	args []string,
+	foundFlags *[]*models.Flag,
+	index int) (int, error) {
+	for _, shorthand := range shortHands {
+		s := string(shorthand)
+		flag := FindOne(flags, s, ShortFlag)
+		if flag == nil {
+			return -1, fmt.Errorf("Unrecognized flag %s", s)
+		}
+		if len(shortHands) == 1 {
+			index = LookUpFlagValues(flag, index, args...)
+		}
+		*foundFlags = append(*foundFlags, flag)
+	}
+	return index, nil
+}
+
+// Hanldes parsing for long form flag
+func parseLongHand(
+	longFormat string,
+	flags []models.Flag,
+	args []string,
+	foundFlags *[]*models.Flag,
+	index int,
+) (int, error) {
+	flag := FindOne(flags, longFormat, LongFlag)
+	if flag == nil {
+		return -1, fmt.Errorf("Unrecognized flag %s", longFormat)
+	}
+	index = LookUpFlagValues(flag, index, args...)
+	*foundFlags = append(*foundFlags, flag)
+	return index, nil
+}
+
 // Looks up a flag with the value `v` and the type `t`.
 // It returns the flag if found
-func FindOne(flags []models.Flag, v string, t int) models.Flag {
+func FindOne(flags []models.Flag, v string, t int) *models.Flag {
 	var check func(f models.Flag, v string) models.Flag
 	if t == LongFlag {
 		check = func(f models.Flag, v string) models.Flag {
@@ -71,13 +107,27 @@ func FindOne(flags []models.Flag, v string, t int) models.Flag {
 	for _, f := range flags {
 		found := check(f, v)
 		if found.Name != "" {
-			return found
+			return &found
 		}
 	}
-	return models.Flag{}
+	return nil
 }
 
+// todo: needs testing
 // Forward look up of values realted to a flag
-func LookUpFlagValues(flag *models.Flag, index int, args ...string) {
-	flag.Name = "change to r"
+func LookUpFlagValues(flag *models.Flag, index int, args ...string) int {
+	if flag.SingleValue {
+		index++
+		flag.Values = append(flag.Values, args[0])
+		return index
+	}
+	for _, val := range args {
+		if strings.HasPrefix(val, "-") || strings.HasPrefix(val, "--") {
+			break
+		}
+		flag.Values = append(flag.Values, val)
+		index++
+	}
+
+	return index
 }
