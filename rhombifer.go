@@ -3,8 +3,10 @@ package rhombifer
 
 import (
 	"fmt"
-	"github.com/racg0092/rhombifer/pkg/models"
 	"sync"
+
+	"github.com/racg0092/rhombifer/pkg/models"
+	"github.com/racg0092/rhombifer/pkg/parsing"
 )
 
 var root *Command
@@ -65,5 +67,16 @@ func ExecCommand(cmd string, args ...string) error {
 		//todo: check if the flags present are valid
 
 	}
+
+	if len(args) > 0 {
+		foundFlags, err := parsing.FlagsLookup(subcommand.Flags, args...)
+		if err != nil {
+			return err
+		}
+		if foundFlags != nil {
+			subcommand.FoundFlags = foundFlags
+		}
+	}
+
 	return subcommand.Run(args...)
 }

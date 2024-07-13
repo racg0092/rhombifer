@@ -19,6 +19,9 @@ type Command struct {
 	// flags if any
 	Flags []models.Flag
 
+	// Flags found when parsing input. It holds a pointer to the flags in [Flags]
+	FoundFlags []*models.Flag
+
 	// Sub commands for this command
 	Subs map[string]Command
 
@@ -46,4 +49,9 @@ func (cmd *Command) AddSub(command Command) {
 		panic("attempting to set sub command to a nil reference")
 	}
 	cmd.Subs[command.Name] = command
+}
+
+// Sets the value of [FoundFlags] in [Command] to <nil>
+func (cmd *Command) EmptyFoundFlags() {
+	cmd.FoundFlags = nil
 }
