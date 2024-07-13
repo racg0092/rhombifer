@@ -49,7 +49,16 @@ func ExecCommand(cmd string, args ...string) error {
 		return fmt.Errorf("Expected root command to be set found %v", root)
 	}
 	if len(args) == 0 && root.Run != nil && cmd == "" {
-		root.Run()
+		if len(args) > 0 {
+			foundFlags, err := parsing.FlagsLookup(root.Flags, args...)
+			if err != nil {
+				return err
+			}
+			if foundFlags == nil {
+				return fmt.Errorf("Expected flags but found none")
+			}
+		}
+		root.Run(args...)
 		return nil
 	}
 	subcommand, found := root.Subs[cmd]
