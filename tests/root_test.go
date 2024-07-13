@@ -68,13 +68,3 @@ func TestStartApp(t *testing.T) {
 		t.Error(err)
 	}
 }
-
-func ExampleHelpCommand() {
-	// get root command if any. Warning calling this function
-	// creates root command
-	root := rhombifer.Root()
-	// add built in. can be added to any command
-	root.AddSub(builtin.HelpCommand(nil, nil))
-	// run help command
-	root.Subs["help"].Run()
-}
