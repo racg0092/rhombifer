@@ -1,20 +1,26 @@
+// Package parsing inmplements utilities functions for manipulating and parsing the raw
+// user input.
+//
+// This is the package used to parse flags and load values into the command execution
 package parsing
 
 import (
 	"fmt"
-	"github.com/racg0092/rhombifer/pkg/models"
 	"strings"
+
+	"github.com/racg0092/rhombifer/pkg/models"
 )
 
 const (
+	// Long Format for flag
 	LongFlag = iota
+	// Short Format for flag
 	ShortFlag
 )
 
-// Looks up flags in the args provided if any is found a map of runable flags (flr) is returned.
-// The function will stop looking for flags if it reaches the end of slice of args or runs into
-// a sub command
-func FlagsLookup(flags []models.Flag, args ...string) (flr []*models.Flag, err error) {
+// Looks up flags in the args provided if any is found a map of runable flags (foundFlags) is returned.
+// The function will stop looking for flags if it reaches the end of slice of args.
+func FlagsLookup(flags []models.Flag, args ...string) (foundFlags []*models.Flag, err error) {
 	if flags == nil || len(flags) <= 0 {
 		return nil, fmt.Errorf("Flags is either nil or empty")
 	}
@@ -24,14 +30,14 @@ func FlagsLookup(flags []models.Flag, args ...string) (flr []*models.Flag, err e
 			if len(a) == 1 {
 				return nil, fmt.Errorf("Shorthand - has not follow up flag identifier")
 			}
-			idx, err := parseShortHand(a[1:], flags, args[i+1:], &flr, i)
+			idx, err := parseShortHand(a[1:], flags, args[i+1:], &foundFlags, i)
 			if err != nil {
 				return nil, err
 			}
 			i = idx
 		} else if strings.HasPrefix(a, "--") {
 			a = a[2:]
-			idx, err := parseLongHand(a, flags, args[i+1:], &flr, i)
+			idx, err := parseLongHand(a, flags, args[i+1:], &foundFlags, i)
 			if err != nil {
 				return nil, err
 			}
@@ -40,14 +46,28 @@ func FlagsLookup(flags []models.Flag, args ...string) (flr []*models.Flag, err e
 			break
 		}
 	}
-	return flr, nil
+	return foundFlags, nil
 }
 
-// Handles parsing for a shothand flags. It takes in `shortHands` which the flag it can be **-a** or **-abc**. If it is a multi value
-// shortHand flag then the value look up is skipped. It takes in the `flags` found in the command if any, the `args` which is the raw
-// input string after the flag has been parsed out. A pointer to `foundFlags` which will create a slice of pointers to the `flags` only
-// if it is found. The `index` represenst the position in the `args` input it used yo move the pointer in the loop to avoid parsing values as
+// Handles parsing for a shothand flags. It takes in `shortHands` which the flag it can be **-a** or **-abc**.
+// It takes in the `flags` registered in the command if any, the `args` which is the raw input string after the flag
+// has been parsed out. A pointer to `foundFlags` which will create a slice of pointers to the `flags` only
+// for the found ones. The `index` represenst the position in the `args` input it used yo move the pointer in the loop to avoid parsing values as
 // flags if they have already been parsed and assign to a flag
+//
+// This function should be called by [FlagsLookup] only. However below is simple example of usage
+//
+//	flags := cmd.Flags
+//	args := "-rgb test"
+//	shortHands := args[0]
+//	var foundFlags []*models.Flag
+//	var i int // this would usually be the index from a loop
+//	// before running parseShortHand you would need to identifie if the flag is in short format
+//	idx, err := parseShortHand(shortHands[1:], flags, args[1:], &foundFlags, i)
+//	if err != nil {
+//	  return err
+//	}
+//	i = idx // updates position of index for the loop iteration
 func parseShortHand(
 	shortHands string,
 	flags []models.Flag,
@@ -68,7 +88,7 @@ func parseShortHand(
 	return index, nil
 }
 
-// Hanldes parsing for long form flag
+// Hanldes parsing a longFormat flag
 func parseLongHand(
 	longFormat string,
 	flags []models.Flag,
