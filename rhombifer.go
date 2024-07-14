@@ -42,25 +42,35 @@ func Root() *Command {
 	return root
 }
 
+// Runs the root command if it has been set and no help command is set as default run
+func runRoot(args ...string) error {
+	root := Root()
+	if root.Run == nil {
+		return nil
+	}
+	if len(args) > 0 {
+		foundFlags, err := parsing.FlagsLookup(root.Flags, args...)
+		if err != nil {
+			return err
+		}
+		root.FoundFlags = foundFlags
+	}
+	return nil
+}
+
+//todo: this function will probably need to be refactor for better usability
+
 // Executes command passed in. It expects [root] to be set
 func ExecCommand(cmd string, args ...string) error {
 	root := Root()
 	if root == nil {
 		return fmt.Errorf("Expected root command to be set found %v", root)
 	}
-	if len(args) == 0 && root.Run != nil && cmd == "" {
-		if len(args) > 0 {
-			foundFlags, err := parsing.FlagsLookup(root.Flags, args...)
-			if err != nil {
-				return err
-			}
-			if foundFlags == nil {
-				return fmt.Errorf("Expected flags but found none")
-			}
-		}
-		root.Run(args...)
-		return nil
+
+	if len(args) == 0 && cmd == "" || (cmd == "" && IsFirstArgFlag(args[0])) {
+		return runRoot(args...)
 	}
+
 	subcommand, found := root.Subs[cmd]
 	if !found {
 		return fmt.Errorf("Command %s was not found", cmd)
@@ -69,12 +79,14 @@ func ExecCommand(cmd string, args ...string) error {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
 	}
 
-	if subcommand.RequiredFlags != nil {
+	if len(subcommand.RequiredFlags) != 0 {
 		if len(args) == 0 {
 			return fmt.Errorf("This command (%s) requires flags. Please check the commands docs", subcommand.Name)
 		}
-		//todo: check if the flags present are valid
-
+		valid := subcommand.ValidateRequiredFlags(args)
+		if !valid {
+			return fmt.Errorf("Command [%s] requires the expected flags [%v] but found [%v]", subcommand.Name, subcommand.RequiredFlags, args)
+		}
 	}
 
 	if len(args) > 0 {

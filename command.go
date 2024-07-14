@@ -14,6 +14,7 @@ type Command struct {
 	// Long command description
 	LongDesc string
 
+	// A slice of flags required to run this command
 	RequiredFlags []string
 
 	// flags if any
@@ -54,4 +55,28 @@ func (cmd *Command) AddSub(command Command) {
 // Sets the value of [FoundFlags] in [Command] to <nil>
 func (cmd *Command) EmptyFoundFlags() {
 	cmd.FoundFlags = nil
+}
+
+// Validates if required flags are found in the input string. If any required flag is missing it returns false
+// otherwise true. If no flags are required it returns true.
+func (cmd *Command) ValidateRequiredFlags(args []string) bool {
+	if len(cmd.RequiredFlags) == 0 {
+		return true
+	}
+	if len(args) == 0 {
+		return false
+	}
+	for _, rf := range cmd.RequiredFlags {
+		var found bool
+		for _, af := range args {
+			if af == rf {
+				found = true
+				break
+			}
+		}
+		if found == false {
+			return false
+		}
+	}
+	return true
 }

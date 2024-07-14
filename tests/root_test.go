@@ -1,70 +1,50 @@
 package rhombifer
 
 import (
-	"fmt"
 	"os"
+	"strings"
 	"testing"
 
-	"github.com/racg0092/rhombifer"
+	rhombi "github.com/racg0092/rhombifer"
 	"github.com/racg0092/rhombifer/pkg/builtin"
+	"github.com/racg0092/rhombifer/pkg/models"
 )
 
-func TestRoot(t *testing.T) {
-	rootCmd := rhombifer.Root()
-	rootCmd.Run = func(args ...string) error {
-		fmt.Println("Yay we are up and running")
-		return nil
-	}
-	rootCmd.Run()
+// sample user input
+func mimicOsArgs() []string {
+	input := "./myprogram --lol"
+
+	args := make([]string, 0)
+	args = append(args, strings.Split(input, " ")...)
+	return args
 }
 
-func TestBuiltInHelp(t *testing.T) {
-	root := rhombifer.Root()
-	root.AddSub(builtin.HelpCommand(nil, nil))
-	root.Subs["help"].Run()
+func AddSampleFlags(cmd *rhombi.Command) {
+
+	r := models.Flag{
+		Name:        "recursive",
+		ShortFormat: "r",
+	}
+
+	cmd.AddFlag(r)
 }
 
-func TestHelpPrintWithCommands(t *testing.T) {
-	root := rhombifer.Root()
-	cmd := rhombifer.Command{
-		Name:      "echo",
-		ShortDesc: "Prints hello world",
-		LongDesc:  "Prints a simple hello world for the hell of it",
-		Run: func(args ...string) error {
-			fmt.Println("Hello World")
-			return nil
-		},
-	}
-	root.AddSub(cmd)
-	root.AddSub(builtin.HelpCommand(nil, nil))
-	root.Subs["help"].Run()
-}
+func TestRootAndExe(t *testing.T) {
+	os.Args = mimicOsArgs()
+	root := rhombi.Root()
 
-func TestExecCommand(t *testing.T) {
-	root := rhombifer.Root()
-	if root == nil {
-		t.Errorf("Root command not set")
-	}
-	root.AddSub(builtin.HelpCommand(nil, nil))
-	root.Run = func(args ...string) error {
-		root.Subs["help"].Run()
-		return nil
-	}
-
-	t.Run("empty command", func(t *testing.T) {
-		err := rhombifer.ExecCommand("")
-		if err != nil {
+	t.Run("running root with no values", func(t *testing.T) {
+		if err := rhombi.Start(); err != nil {
 			t.Error(err)
 		}
 	})
 
-}
-
-func TestStartApp(t *testing.T) {
-	os.Args = []string{"self"}
-	root := rhombifer.Root()
-	root.AddSub(builtin.HelpCommand(nil, nil))
-	if err := rhombifer.Start(); err != nil {
-		t.Error(err)
-	}
+	t.Run("running root wiht not values and help as default", func(t *testing.T) {
+		rhombi.RunHelpIfNoInput = true
+		help := builtin.HelpCommand(nil, nil)
+		root.AddSub(help)
+		if err := rhombi.Start(); err != nil {
+			t.Error(err)
+		}
+	})
 }

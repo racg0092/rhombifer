@@ -14,22 +14,29 @@ type App struct {
 // This may change if future versions
 func Start() error {
 	args := os.Args[1:]
+	var cmd string
 
-	if len(args) == 0 {
-		if root != nil {
-			if err := ExecCommand("help"); err != nil {
-				return err
-			}
-			return nil
-		}
-	}
-
-	// Expections are to change the control structure to allow for multiple roots
+	// Expections are to change the control structure to allow for multiple roots. At that point this would change
+	// to accomodate for multiple roots (Honestly not sure if this is even worth it)
 	if root == nil {
 		return fmt.Errorf("Root command expected got %v", root)
 	}
 
-	if err := ExecCommand(args[0], args[1:]...); err != nil {
+	if len(args) == 0 && RunHelpIfNoInput {
+		cmd = "help"
+	} else if len(args) == 0 {
+		cmd = ""
+	} else if len(args) > 0 && IsFirstArgFlag(args[0]) {
+		if !AllowFlagsInRoot {
+			return fmt.Errorf("Root command does not allow flags. Please use a subcommand")
+		}
+		cmd = ""
+	} else if len(args) > 0 {
+		cmd = args[0]
+		args = args[1:]
+	}
+
+	if err := ExecCommand(cmd, args...); err != nil {
 		return err
 	}
 
