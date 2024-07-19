@@ -22,13 +22,13 @@ const (
 // The function will stop looking for flags if it reaches the end of slice of args.
 func FlagsLookup(flags []models.Flag, args ...string) (foundFlags []*models.Flag, err error) {
 	if flags == nil || len(flags) <= 0 {
-		return nil, fmt.Errorf("Flags is either nil or empty")
+		return nil, ErrFlagsNilOrEmpty
 	}
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		if strings.HasPrefix(a, "-") && !strings.HasPrefix(a, "--") {
 			if len(a) == 1 {
-				return nil, fmt.Errorf("Shorthand - has not follow up flag identifier")
+				return nil, ErrShortFormatHasNoFlagId
 			}
 			idx, err := parseShortHand(a[1:], flags, args[i+1:], &foundFlags, i)
 			if err != nil {

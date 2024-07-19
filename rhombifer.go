@@ -45,12 +45,15 @@ func Root() *Command {
 // Runs the root command if it has been set and no help command is set as default run
 func runRoot(args ...string) error {
 	root := Root()
-	if root.Run == nil {
+	if root.Run == nil && len(args) > 0 {
+		return ErroNoRootRunFunc
+	} else if root.Run == nil {
 		return nil
 	}
+
 	if len(args) > 0 {
 		foundFlags, err := parsing.FlagsLookup(root.Flags, args...)
-		if err != nil {
+		if err != nil && err != parsing.ErrFlagsNilOrEmpty {
 			return err
 		}
 		root.FoundFlags = foundFlags
