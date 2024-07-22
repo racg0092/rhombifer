@@ -43,6 +43,17 @@ func HelpCommand(short, long *string) rhombifer.Command {
 				}
 				fmt.Fprintf(w, "\n\n")
 				w.Flush()
+			} else {
+				if root == nil {
+					return fmt.Errorf("Root is not defined")
+				}
+				cmd, found := root.Subs[args[0]]
+				if !found {
+					return fmt.Errorf("Command %s is not recognized", args[0])
+				}
+				fmt.Printf("\n%s\n", text.LightGray(cmd.Name))
+				fmt.Printf("\n%s\n\n", cmd.LongDesc)
+				// loop though flags if any and display them with the tab writer
 			}
 			return nil
 		},

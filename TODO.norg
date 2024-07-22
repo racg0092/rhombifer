@@ -1,0 +1,23 @@
+* Priority:
+  - ( ) Clean up project structure
+  - ( ) Make it to where it can be useful to acceptable standards within another project 
+  - ( ) Simplify design
+
+
+
+* Design:
+
+
+* Features:
+
+
+
+* Archive:
+
+
+** Features:
+  - (x) Flag Parsing
+    - (x) Short Hand Multi Flags (-rfh) should not allow for values
+  --- (x) Parse values when single short hand
+
+ 

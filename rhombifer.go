@@ -93,12 +93,18 @@ func ExecCommand(cmd string, args ...string) error {
 	}
 
 	if len(args) > 0 {
-		foundFlags, err := parsing.FlagsLookup(subcommand.Flags, args...)
+		rawsOnly, err := parsing.IsRawValuesOnly(args...)
 		if err != nil {
 			return err
 		}
-		if foundFlags != nil {
-			subcommand.FoundFlags = foundFlags
+		if !rawsOnly {
+			foundFlags, err := parsing.FlagsLookup(subcommand.Flags, args...)
+			if err != nil {
+				return err
+			}
+			if foundFlags != nil {
+				subcommand.FoundFlags = foundFlags
+			}
 		}
 	}
 
