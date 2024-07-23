@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/racg0092/rhombifer"
+	"github.com/racg0092/rhombifer/pkg/models"
 	// "github.com/racg0092/rhombifer/pkg/models"
 )
 
@@ -22,6 +23,15 @@ func FuggazziSubs() []rhombifer.Command {
 	return commands
 }
 
+func FugazziFlags(cmd *rhombifer.Command) {
+	foo := models.Flag{
+		Name:  "Foo",
+		Short: "Bla Bla Bla",
+		Long:  "Foo Foo Foof foo",
+	}
+	cmd.Flags = append(cmd.Flags, foo)
+}
+
 func OsArgs(expand string) []string {
 	program := "myprg"
 	if "" != expand {
@@ -35,7 +45,9 @@ func TestHelpWithValue(t *testing.T) {
 	os.Args = OsArgs("help rcmd")
 	root := rhombifer.Root()
 	root.AddSub(HelpCommand(nil, nil))
-	root.Subs["rcmd"] = FuggazziSubs()[0]
+	rcmd := FuggazziSubs()[0]
+	FugazziFlags(&rcmd)
+	root.Subs["rcmd"] = rcmd
 	rhombifer.RunHelpIfNoInput = true
 	if err := rhombifer.Start(); err != nil {
 		t.Error(err)

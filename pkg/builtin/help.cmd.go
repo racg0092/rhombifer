@@ -51,9 +51,7 @@ func HelpCommand(short, long *string) rhombifer.Command {
 				if !found {
 					return fmt.Errorf("Command %s is not recognized", args[0])
 				}
-				fmt.Printf("\n%s\n", text.LightGray(cmd.Name))
-				fmt.Printf("\n%s\n\n", cmd.LongDesc)
-				// loop though flags if any and display them with the tab writer
+				subHelp(cmd)
 			}
 			return nil
 		},
@@ -68,4 +66,24 @@ func HelpCommand(short, long *string) rhombifer.Command {
 	}
 
 	return help
+}
+
+// Handles help function for sub commands of the root command
+func subHelp(cmd rhombifer.Command) {
+	fmt.Print("\n")
+	fmt.Printf("%s\n", cmd.Name)
+	if cmd.LongDesc != "" {
+		fmt.Printf("\n%s\n\n", cmd.LongDesc)
+	} else {
+		fmt.Printf("\n%s\n\n", cmd.ShortDesc)
+	}
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+	fmt.Fprintf(w, "%v", text.Bold("Flags:\n"))
+	if cmd.Flags != nil {
+		for _, f := range cmd.Flags {
+			fmt.Fprintf(w, "\t--%s\t%s", f.Name, f.Short)
+		}
+		fmt.Fprintf(w, "\n\n")
+		w.Flush()
+	}
 }
