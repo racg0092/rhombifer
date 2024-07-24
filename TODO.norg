@@ -3,7 +3,9 @@
   - ( ) Make it to where it can be useful to acceptable standards within another project 
   - ( ) Simplify design
 
-
+* Bugs
+  - ( ) Need to reference flags in FlagsLookUp
+   -- ( ) Flags need to be added by reference so do commands
 
 * Design:
 

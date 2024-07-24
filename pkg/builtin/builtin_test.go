@@ -48,7 +48,7 @@ func TestHelpWithValue(t *testing.T) {
 	rcmd := FuggazziSubs()[0]
 	FugazziFlags(&rcmd)
 	root.Subs["rcmd"] = rcmd
-	rhombifer.RunHelpIfNoInput = true
+	rhombifer.GetConfig().RunHelpIfNoInput = true
 	if err := rhombifer.Start(); err != nil {
 		t.Error(err)
 	}

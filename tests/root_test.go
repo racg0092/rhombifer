@@ -47,7 +47,7 @@ func TestRootAndExe(t *testing.T) {
 
 	t.Run("running root wiht not values and help as default", func(t *testing.T) {
 		os.Args = mimicOsArgs("")
-		rhombi.RunHelpIfNoInput = true
+		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
 		root.AddSub(help)
 		if err := rhombi.Start(); err != nil {
@@ -57,7 +57,7 @@ func TestRootAndExe(t *testing.T) {
 
 	t.Run("running root with flag", func(t *testing.T) {
 		os.Args = mimicOsArgs("--lol")
-		rhombi.RunHelpIfNoInput = true
+		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
 		root.AddSub(help)
 		root.Run = func(a ...string) error {
@@ -71,7 +71,7 @@ func TestRootAndExe(t *testing.T) {
 
 	t.Run("running root with flag and values", func(t *testing.T) {
 		os.Args = mimicOsArgs("-r foo bar")
-		rhombi.RunHelpIfNoInput = true
+		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
 		root.AddSub(help)
 		AddSampleFlags(root)

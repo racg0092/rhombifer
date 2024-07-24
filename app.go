@@ -22,12 +22,12 @@ func Start() error {
 		return fmt.Errorf("Root command expected got %v", root)
 	}
 
-	if len(args) == 0 && RunHelpIfNoInput {
+	if len(args) == 0 && config.RunHelpIfNoInput {
 		cmd = "help"
 	} else if len(args) == 0 {
 		cmd = ""
 	} else if len(args) > 0 && IsFirstArgFlag(args[0]) {
-		if !AllowFlagsInRoot {
+		if !config.AllowFlagsInRoot {
 			return fmt.Errorf("Root command does not allow flags. Please use a subcommand")
 		}
 		cmd = ""
