@@ -18,13 +18,13 @@ type Command struct {
 	RequiredFlags []string
 
 	// flags if any
-	Flags []models.Flag
+	Flags []*models.Flag
 
 	// Flags found when parsing input. It holds a pointer to the flags in [Flags]
 	FoundFlags []*models.Flag
 
 	// Sub commands for this command
-	Subs map[string]Command
+	Subs map[string]*Command
 
 	// Action perform by the command
 	Run Run
@@ -37,7 +37,7 @@ type Command struct {
 }
 
 // Adds a flag to the a command
-func (cmd *Command) AddFlag(f models.Flag) {
+func (cmd *Command) AddFlag(f *models.Flag) {
 	if f.RequiresValue && f.Values == nil {
 		f.Values = make([]string, 0)
 	}
@@ -45,7 +45,7 @@ func (cmd *Command) AddFlag(f models.Flag) {
 }
 
 // Adds a sub command to a command
-func (cmd *Command) AddSub(command Command) {
+func (cmd *Command) AddSub(command *Command) {
 	if cmd == nil {
 		panic("attempting to set sub command to a nil reference")
 	}

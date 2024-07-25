@@ -69,7 +69,7 @@ func HelpCommand(short, long *string) rhombifer.Command {
 }
 
 // Handles help function for sub commands of the root command
-func subHelp(cmd rhombifer.Command) {
+func subHelp(cmd *rhombifer.Command) {
 	fmt.Print("\n")
 	fmt.Printf("%s\n", cmd.Name)
 	if cmd.LongDesc != "" {

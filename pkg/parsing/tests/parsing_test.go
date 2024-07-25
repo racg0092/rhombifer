@@ -16,8 +16,8 @@ func virtaulArgs(input string) []string {
 }
 
 // Create sample flags to teste against
-func sampleFlags() []models.Flag {
-	flags := make([]models.Flag, 0)
+func sampleFlags() []*models.Flag {
+	flags := make([]*models.Flag, 0)
 
 	r := models.Flag{
 		Name:        "recursive",
@@ -29,7 +29,7 @@ func sampleFlags() []models.Flag {
 		ShortFormat: "b",
 	}
 
-	flags = append(flags, r, b)
+	flags = append(flags, &r, &b)
 	return flags
 }
 

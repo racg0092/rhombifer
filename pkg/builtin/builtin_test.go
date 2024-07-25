@@ -29,7 +29,7 @@ func FugazziFlags(cmd *rhombifer.Command) {
 		Short: "Bla Bla Bla",
 		Long:  "Foo Foo Foof foo",
 	}
-	cmd.Flags = append(cmd.Flags, foo)
+	cmd.Flags = append(cmd.Flags, &foo)
 }
 
 func OsArgs(expand string) []string {
@@ -44,10 +44,11 @@ func OsArgs(expand string) []string {
 func TestHelpWithValue(t *testing.T) {
 	os.Args = OsArgs("help rcmd")
 	root := rhombifer.Root()
-	root.AddSub(HelpCommand(nil, nil))
+	help := HelpCommand(nil, nil)
+	root.AddSub(&help)
 	rcmd := FuggazziSubs()[0]
 	FugazziFlags(&rcmd)
-	root.Subs["rcmd"] = rcmd
+	root.Subs["rcmd"] = &rcmd
 	rhombifer.GetConfig().RunHelpIfNoInput = true
 	if err := rhombifer.Start(); err != nil {
 		t.Error(err)
@@ -59,7 +60,8 @@ func ExampleHelpCommand() {
 	// creates root command
 	root := rhombifer.Root()
 	// add built in. can be added to any command
-	root.AddSub(HelpCommand(nil, nil))
+	help := HelpCommand(nil, nil)
+	root.AddSub(&help)
 	// run help command
 	root.Subs["help"].Run()
 }

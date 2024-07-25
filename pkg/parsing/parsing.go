@@ -20,7 +20,7 @@ const (
 
 // Looks up flags in the args provided if any is found a map of runable flags (foundFlags) is returned.
 // The function will stop looking for flags if it reaches the end of slice of args.
-func FlagsLookup(flags []models.Flag, args ...string) (foundFlags []*models.Flag, err error) {
+func FlagsLookup(flags []*models.Flag, args ...string) (foundFlags []*models.Flag, err error) {
 	if flags == nil || len(flags) <= 0 {
 		return nil, ErrFlagsNilOrEmpty
 	}
@@ -70,7 +70,7 @@ func FlagsLookup(flags []models.Flag, args ...string) (foundFlags []*models.Flag
 //	i = idx // updates position of index for the loop iteration
 func parseShortHand(
 	shortHands string,
-	flags []models.Flag,
+	flags []*models.Flag,
 	args []string,
 	foundFlags *[]*models.Flag,
 	index int) (int, error) {
@@ -91,7 +91,7 @@ func parseShortHand(
 // Hanldes parsing a longFormat flag
 func parseLongHand(
 	longFormat string,
-	flags []models.Flag,
+	flags []*models.Flag,
 	args []string,
 	foundFlags *[]*models.Flag,
 	index int,
@@ -107,27 +107,27 @@ func parseLongHand(
 
 // Looks up a flag with the value `v` and the type `t`.
 // It returns the flag if found
-func FindOne(flags []models.Flag, v string, t int) *models.Flag {
-	var check func(f models.Flag, v string) models.Flag
+func FindOne(flags []*models.Flag, v string, t int) *models.Flag {
+	var check func(f *models.Flag, v string) *models.Flag
 	if t == LongFlag {
-		check = func(f models.Flag, v string) models.Flag {
+		check = func(f *models.Flag, v string) *models.Flag {
 			if f.Name == v {
 				return f
 			}
-			return models.Flag{}
+			return nil
 		}
 	} else if t == ShortFlag {
-		check = func(f models.Flag, v string) models.Flag {
+		check = func(f *models.Flag, v string) *models.Flag {
 			if f.ShortFormat == v {
 				return f
 			}
-			return models.Flag{}
+			return nil
 		}
 	}
 	for _, f := range flags {
 		found := check(f, v)
 		if found.Name != "" {
-			return &found
+			return found
 		}
 	}
 	return nil

@@ -20,10 +20,10 @@ func SetRoot(cmd *Command) {
 	if cmd != nil {
 		cmd.Root = true
 		if cmd.Subs == nil {
-			cmd.Subs = make(map[string]Command)
+			cmd.Subs = make(map[string]*Command)
 		}
 		if cmd.Flags == nil {
-			cmd.Flags = make([]models.Flag, 0)
+			cmd.Flags = make([]*models.Flag, 0)
 		}
 		// for thread safety
 		once.Do(func() {

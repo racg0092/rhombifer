@@ -32,7 +32,7 @@ func AddSampleFlags(cmd *rhombi.Command) {
 		ShortFormat: "r",
 	}
 
-	cmd.AddFlag(r)
+	cmd.AddFlag(&r)
 }
 
 func TestRootAndExe(t *testing.T) {
@@ -49,7 +49,7 @@ func TestRootAndExe(t *testing.T) {
 		os.Args = mimicOsArgs("")
 		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
-		root.AddSub(help)
+		root.AddSub(&help)
 		if err := rhombi.Start(); err != nil {
 			t.Error(err)
 		}
@@ -59,7 +59,7 @@ func TestRootAndExe(t *testing.T) {
 		os.Args = mimicOsArgs("--lol")
 		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
-		root.AddSub(help)
+		root.AddSub(&help)
 		root.Run = func(a ...string) error {
 			fmt.Println("Yay from root")
 			return nil
@@ -73,7 +73,7 @@ func TestRootAndExe(t *testing.T) {
 		os.Args = mimicOsArgs("-r foo bar")
 		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
-		root.AddSub(help)
+		root.AddSub(&help)
 		AddSampleFlags(root)
 		root.Run = func(a ...string) error {
 			fmt.Println("Yay from root")
