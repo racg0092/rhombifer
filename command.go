@@ -37,11 +37,13 @@ type Command struct {
 }
 
 // Adds a flag to the a command
-func (cmd *Command) AddFlag(f *models.Flag) {
-	if f.RequiresValue && f.Values == nil {
-		f.Values = make([]string, 0)
+func (cmd *Command) AddFlag(flags ...*models.Flag) {
+	for _, f := range flags {
+		if f.RequiresValue && f.Values == nil {
+			f.Values = make([]string, 0)
+		}
+		cmd.Flags = append(cmd.Flags, f)
 	}
-	cmd.Flags = append(cmd.Flags, f)
 }
 
 // Adds a sub command to a command
