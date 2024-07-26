@@ -4,11 +4,13 @@
   - ( ) Simplify design
 
 * Bugs
-  - ( ) Need to reference flags in FlagsLookUp
-   -- ( ) Flags need to be added by reference so do commands
+  - (x) Need to reference flags in FlagsLookUp
+   -- (x) Flags need to be added by reference so do commands
+  - ( ) Issue when multiple flags are added to a command and there are required flags
+  - (x) Nill direference when FindOne function in parsing is invoke (Caused by the change to pointers)
 
 * Design:
-
+  - ( ) Is probably a good idea to change required flags from a slice to an array since the value is not dynamic
 
 * Features:
 

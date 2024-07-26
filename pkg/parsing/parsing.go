@@ -126,7 +126,7 @@ func FindOne(flags []*models.Flag, v string, t int) *models.Flag {
 	}
 	for _, f := range flags {
 		found := check(f, v)
-		if found.Name != "" {
+		if found != nil {
 			return found
 		}
 	}
