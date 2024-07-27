@@ -116,3 +116,17 @@ func TestFlagsLookup(t *testing.T) {
 	})
 
 }
+
+func TestSingleValueFlag(t *testing.T) {
+	input := virtaulArgs("--recursive lol bob")
+	flag := models.Flag{
+		Name:        "recursive",
+		SingleValue: true,
+	}
+	flags := make([]*models.Flag, 0)
+	flags = append(flags, &flag)
+	_, err := parsing.FlagsLookup(flags, input...)
+	if err == nil {
+		t.Errorf("multiple values for single flag error not identify")
+	}
+}

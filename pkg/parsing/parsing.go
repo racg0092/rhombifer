@@ -81,7 +81,10 @@ func parseShortHand(
 			return -1, fmt.Errorf("Unrecognized flag %s", s)
 		}
 		if len(shortHands) == 1 {
-			index = LookUpFlagValues(flag, index, args...)
+			index, err := LookUpFlagValues(flag, index, args...)
+			if err != nil {
+				return index, err
+			}
 		}
 		*foundFlags = append(*foundFlags, flag)
 	}
@@ -100,7 +103,10 @@ func parseLongHand(
 	if flag == nil {
 		return -1, fmt.Errorf("Unrecognized flag %s", longFormat)
 	}
-	index = LookUpFlagValues(flag, index, args...)
+	index, err := LookUpFlagValues(flag, index, args...)
+	if err != nil {
+		return index, err
+	}
 	*foundFlags = append(*foundFlags, flag)
 	return index, nil
 }
@@ -135,11 +141,17 @@ func FindOne(flags []*models.Flag, v string, t int) *models.Flag {
 
 // todo: needs testing
 // Forward look up of values realted to a flag
-func LookUpFlagValues(flag *models.Flag, index int, args ...string) int {
+func LookUpFlagValues(flag *models.Flag, index int, args ...string) (int, error) {
 	if flag.SingleValue {
+		if len(args) > 1 {
+			if !strings.HasPrefix(args[1], "--") || !strings.HasPrefix(args[1], "-") {
+				ErrFlagOnlyAccepstOneValue.AppendMessage("flag name: " + flag.Name)
+				return index, ErrFlagOnlyAccepstOneValue
+			}
+		}
 		index++
 		flag.Values = append(flag.Values, args[0])
-		return index
+		return index, nil
 	}
 	for _, val := range args {
 		if strings.HasPrefix(val, "-") || strings.HasPrefix(val, "--") {
@@ -149,5 +161,5 @@ func LookUpFlagValues(flag *models.Flag, index int, args ...string) int {
 		index++
 	}
 
-	return index
+	return index, nil
 }
