@@ -102,6 +102,8 @@ func ExecCommand(cmd string, args ...string) error {
 			if err != nil {
 				return err
 			}
+			// testing concept not sure if this is the best way to approach it
+			ff = &foundFlags
 			if foundFlags != nil {
 				subcommand.FoundFlags = foundFlags
 			}

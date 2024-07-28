@@ -1,39 +1,12 @@
-package rhombifer
+package tests
 
 import (
 	"fmt"
-	"os"
-	"strings"
-	"testing"
-
 	rhombi "github.com/racg0092/rhombifer"
 	"github.com/racg0092/rhombifer/pkg/builtin"
-	"github.com/racg0092/rhombifer/pkg/models"
+	"os"
+	"testing"
 )
-
-// sample user input
-func mimicOsArgs(params string) []string {
-	var input string
-	if params == "" {
-		input = "./myprogram"
-	} else {
-		input = "./myprogram " + params
-	}
-
-	args := make([]string, 0)
-	args = append(args, strings.Split(input, " ")...)
-	return args
-}
-
-func AddSampleFlags(cmd *rhombi.Command) {
-
-	r := models.Flag{
-		Name:        "recursive",
-		ShortFormat: "r",
-	}
-
-	cmd.AddFlag(&r)
-}
 
 func TestRootAndExe(t *testing.T) {
 	root := rhombi.Root()
@@ -74,7 +47,7 @@ func TestRootAndExe(t *testing.T) {
 		rhombi.GetConfig().RunHelpIfNoInput = true
 		help := builtin.HelpCommand(nil, nil)
 		root.AddSub(&help)
-		AddSampleFlags(root)
+		addSampleFlags(root)
 		root.Run = func(a ...string) error {
 			fmt.Println("Yay from root")
 			return nil

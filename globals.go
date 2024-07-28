@@ -1,5 +1,7 @@
 package rhombifer
 
+import "github.com/racg0092/rhombifer/pkg/models"
+
 // Global rhombifer configuration
 type Config struct {
 	// Determines if the root command allows for flags. By Default is true
@@ -25,3 +27,6 @@ func GetConfig() *Config {
 func SetConfig(c *Config) {
 	config = c
 }
+
+// A pointer to the found flags for the current command execution
+var ff *[]*models.Flag

@@ -8,7 +8,7 @@ test_parsing: ./pkg/parsing/tests/parsing_test.go
 test_builtin:
 	go test -v ./pkg/builtin
 
-test_rhombi:
+test:
 ifdef silent
 		go test ./tests/ 
 else

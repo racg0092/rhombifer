@@ -39,3 +39,68 @@ func ExtractFlagValues(flag *models.Flag, quantity int) ([]string, error) {
 
 	return vals, nil
 }
+
+// Get found flags for the current executed command
+func GetFlags() (*[]*models.Flag, error) {
+	if ff == nil {
+		return nil, ErroFoundFlagsIsNil
+	}
+	return ff, nil
+}
+
+// Check found flags in the current executed command and returns all flags specified in the aliases
+func FindFlags(aliases ...string) ([]*models.Flag, error) {
+	var flags []*models.Flag
+	if ff == nil {
+		return flags, ErroFoundFlagsIsNil
+	}
+
+	if len(aliases) == 0 {
+		return flags, fmt.Errorf("no aliases provided")
+	}
+
+	flags = make([]*models.Flag, 0)
+
+	for _, alias := range aliases {
+		if strings.HasPrefix(alias, "--") {
+			alias = alias[2:]
+		}
+		if strings.HasPrefix(alias, "-") {
+			alias = alias[1:]
+		}
+		for _, f := range *ff {
+			if f.Name == alias || f.ShortFormat == alias {
+				flags = append(flags, f)
+			}
+		}
+	}
+	return flags, nil
+}
+
+// Checks found flags and returns the first flag that matches any of the aliases provided. Once a flag has been
+// matched the rest of the aliases are no searched, use [FindFlags] if that is your intent
+func FlagFlag(aliases ...string) (*models.Flag, error) {
+	if ff == nil {
+		return nil, ErroFoundFlagsIsNil
+	}
+	var flag *models.Flag
+floop:
+	for _, f := range *ff {
+		for _, alias := range aliases {
+			if strings.HasPrefix(alias, "--") {
+				alias = alias[2:]
+			}
+			if strings.HasPrefix(alias, "-") {
+				alias = alias[1:]
+			}
+			if alias == f.Name || alias == f.ShortFormat {
+				flag = f
+				break floop
+			}
+		}
+	}
+	if flag == nil {
+		return nil, ErroFlagNotFound
+	}
+	return flag, nil
+}
