@@ -82,13 +82,13 @@ func ExecCommand(cmd string, args ...string) error {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
 	}
 
-	if len(subcommand.RequiredFlags) != 0 {
+	if len(subcommand.requiredFlags) > 0 {
 		if len(args) == 0 {
 			return fmt.Errorf("This command (%s) requires flags. Please check the commands docs", subcommand.Name)
 		}
 		valid := subcommand.ValidateRequiredFlags(args)
 		if !valid {
-			return fmt.Errorf("Command [%s] requires the expected flags [%v] but found [%v]", subcommand.Name, subcommand.RequiredFlags, args)
+			return fmt.Errorf("Command [%s] requires the expected flags but found [%v]", subcommand.Name, args)
 		}
 	}
 

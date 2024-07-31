@@ -23,10 +23,11 @@ func addSampleFlags(cmd *rhombi.Command) {
 	r := models.Flag{
 		Name:        "recursive",
 		ShortFormat: "r",
+		Required:    true,
 	}
 	foo := models.Flag{
 		Name:        "foo",
 		ShortFormat: "f",
 	}
-	cmd.AddFlag(&r, &foo)
+	cmd.AddFlags(&r, &foo)
 }

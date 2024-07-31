@@ -2,8 +2,9 @@ package tests
 
 import (
 	"fmt"
-	"github.com/racg0092/rhombifer"
 	"testing"
+
+	"github.com/racg0092/rhombifer"
 )
 
 func TestFindFlags(t *testing.T) {
@@ -35,6 +36,25 @@ func TestFindFlags(t *testing.T) {
 
 	})
 
-	//todo find one flag test
+	t.Run("find one flag", func(t *testing.T) {
+		root := rhombifer.Root()
+		cmd := rhombifer.Command{
+			Name: "cmd",
+			Run: func(args ...string) error {
+				fmt.Println("Hello world from cmd")
+				return nil
+			},
+		}
+		addSampleFlags(&cmd)
+		root.AddSub(&cmd)
+		rhombifer.ExecCommand(cmd.Name, "--recursive", "--foo")
+		flag, err := rhombifer.FindFlag("--recursive")
+		if err != nil {
+			t.Error(err)
+		}
 
+		if flag.Name != "recursive" {
+			t.Errorf("found wrong flag %s", flag.Name)
+		}
+	})
 }

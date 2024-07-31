@@ -1,6 +1,9 @@
 package rhombifer
 
-import "github.com/racg0092/rhombifer/pkg/models"
+import (
+	"github.com/racg0092/rhombifer/pkg/models"
+	"strings"
+)
 
 type Run func(args ...string) error
 
@@ -14,11 +17,11 @@ type Command struct {
 	// Long command description
 	LongDesc string
 
-	// A slice of flags required to run this command
-	RequiredFlags []string
-
 	// flags if any
 	Flags []*models.Flag
+
+	// Pointers to required flags if any
+	requiredFlags []*models.Flag
 
 	// Flags found when parsing input. It holds a pointer to the flags in [Flags]
 	FoundFlags []*models.Flag
@@ -37,8 +40,14 @@ type Command struct {
 }
 
 // Adds a flag to the a command
-func (cmd *Command) AddFlag(flags ...*models.Flag) {
+func (cmd *Command) AddFlags(flags ...*models.Flag) {
 	for _, f := range flags {
+		if f.Required {
+			if cmd.requiredFlags == nil {
+				cmd.requiredFlags = make([]*models.Flag, 0)
+			}
+			cmd.requiredFlags = append(cmd.requiredFlags, f)
+		}
 		if f.RequiresValue && f.Values == nil {
 			f.Values = make([]string, 0)
 		}
@@ -62,23 +71,27 @@ func (cmd *Command) EmptyFoundFlags() {
 // Validates if required flags are found in the input string. If any required flag is missing it returns false
 // otherwise true. If no flags are required it returns true.
 func (cmd *Command) ValidateRequiredFlags(args []string) bool {
-	if len(cmd.RequiredFlags) == 0 {
+	if len(cmd.requiredFlags) <= 0 {
 		return true
 	}
+
 	if len(args) == 0 {
 		return false
 	}
-	for _, rf := range cmd.RequiredFlags {
-		var found bool
-		for _, af := range args {
-			if af == rf {
-				found = true
-				break
-			}
-		}
-		if found == false {
-			return false
+
+	var missing bool = false
+	joinArgs := strings.Join(args, " ")
+	for _, f := range cmd.requiredFlags {
+		if !strings.Contains(joinArgs, "--"+f.Name) && !strings.Contains(joinArgs, "-"+f.ShortFormat) {
+			missing = true
+			break
 		}
 	}
-	return true
+
+	return !missing
+}
+
+// Get required flags
+func (cmd *Command) RequiredFlags() *[]*models.Flag {
+	return &cmd.requiredFlags
 }

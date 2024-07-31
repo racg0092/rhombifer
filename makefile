@@ -10,9 +10,9 @@ test_builtin:
 
 test:
 ifdef silent
-		go test ./tests/ 
+	go test ./tests/
 else
-		go test -v ./tests/
+	go test -v ./tests/
 endif
 
 

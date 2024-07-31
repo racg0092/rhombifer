@@ -79,7 +79,7 @@ func FindFlags(aliases ...string) ([]*models.Flag, error) {
 
 // Checks found flags and returns the first flag that matches any of the aliases provided. Once a flag has been
 // matched the rest of the aliases are no searched, use [FindFlags] if that is your intent
-func FlagFlag(aliases ...string) (*models.Flag, error) {
+func FindFlag(aliases ...string) (*models.Flag, error) {
 	if ff == nil {
 		return nil, ErroFoundFlagsIsNil
 	}
