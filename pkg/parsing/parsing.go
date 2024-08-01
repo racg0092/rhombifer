@@ -81,10 +81,11 @@ func parseShortHand(
 			return -1, fmt.Errorf("Unrecognized flag %s", s)
 		}
 		if len(shortHands) == 1 {
-			index, err := LookUpFlagValues(flag, index, args...)
+			idx, err := LookUpFlagValues(flag, index, args...)
 			if err != nil {
-				return index, err
+				return idx, err
 			}
+			index = idx
 		}
 		*foundFlags = append(*foundFlags, flag)
 	}
@@ -149,7 +150,7 @@ func LookUpFlagValues(flag *models.Flag, index int, args ...string) (int, error)
 				return index, ErrFlagOnlyAccepstOneValue
 			}
 		}
-		index++
+		index = index + 1
 		flag.Values = append(flag.Values, args[0])
 		return index, nil
 	}
@@ -158,7 +159,7 @@ func LookUpFlagValues(flag *models.Flag, index int, args ...string) (int, error)
 			break
 		}
 		flag.Values = append(flag.Values, val)
-		index++
+		index = index + 1
 	}
 
 	return index, nil

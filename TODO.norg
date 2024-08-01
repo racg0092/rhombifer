@@ -6,6 +6,7 @@
 
 
 * Bugs
+  - Issue with parsing short hand flags
 
 * Design:
 

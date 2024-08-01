@@ -104,7 +104,7 @@ func TestFlagsLookup(t *testing.T) {
 	})
 
 	t.Run("testing multiple flags with values", func(t *testing.T) {
-		input := virtaulArgs("--recursive lol bob -b yay hello")
+		input := virtaulArgs("-b lol bob --recursive yay hello")
 		flags := sampleFlags()
 		foundFlags, err := parsing.FlagsLookup(flags, input...)
 		if err != nil {
