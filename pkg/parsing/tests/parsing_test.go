@@ -130,3 +130,13 @@ func TestSingleValueFlag(t *testing.T) {
 		t.Errorf("multiple values for single flag error not identify")
 	}
 }
+
+func TestExtractionFlagUtil(t *testing.T) {
+	input := virtaulArgs("-b lol bob --recurse action doubled -l ignore rest")
+	flags, err := parsing.ExtractFlagsFromArgs(input...)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(flags)
+	//todo: can be improved
+}

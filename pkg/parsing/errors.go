@@ -12,4 +12,10 @@ var (
 
 	// When a flag that only accpets one value gets passed more than one value
 	ErrFlagOnlyAccepstOneValue = errs.NewError("flag only accepts one value.")
+
+	ErrMFIWithValues = errs.NewError("multi flag identifier with values. multiflag identifier ex(-abc) does not allow for values")
+
+	ErrFlagsExtractionIsNil = errs.NewError("flag extraction is trying to access unitialized parsed flag")
+
+	ErrUnrecognizedFlag = errs.NewError("unrecognized flag.")
 )

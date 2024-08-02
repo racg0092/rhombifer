@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type Flag struct {
 	// flag name
 	Name string
@@ -29,4 +31,18 @@ type Flag struct {
 
 	// Flag values parsed from the current command being run
 	Values []string
+}
+
+func (f *Flag) AddValues(args ...string) error {
+	if f.RequiresValue && len(args) <= 0 {
+		return fmt.Errorf("flag requires values but got 0")
+	}
+	if f.SingleValue && len(args) > 1 {
+		return fmt.Errorf("flag only accepts one value but got %d values", len(args))
+	}
+	if f.Values == nil {
+		f.Values = make([]string, 0)
+	}
+	f.Values = append(f.Values, args...)
+	return nil
 }
