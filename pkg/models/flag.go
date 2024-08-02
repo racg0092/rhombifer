@@ -46,3 +46,8 @@ func (f *Flag) AddValues(args ...string) error {
 	f.Values = append(f.Values, args...)
 	return nil
 }
+
+// Returns the short and long format name for the flag
+func (f *Flag) GetNames() (short, long string) {
+	return f.ShortFormat, f.Name
+}

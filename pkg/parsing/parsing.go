@@ -54,26 +54,16 @@ func FlagsLookup(flags []*models.Flag, args ...string) (foundFlags []*models.Fla
 // Looks up a flag with the value `v` and the type `t`.
 // It returns the flag if found
 func FindOne(flags []*models.Flag, v string, t int) *models.Flag {
-	var check func(f *models.Flag, v string) *models.Flag
-	if t == LongFlag {
-		check = func(f *models.Flag, v string) *models.Flag {
-			if f.Name == v {
-				return f
-			}
-			return nil
-		}
-	} else if t == ShortFlag {
-		check = func(f *models.Flag, v string) *models.Flag {
-			if f.ShortFormat == v {
-				return f
-			}
-			return nil
-		}
-	}
 	for _, f := range flags {
-		found := check(f, v)
-		if found != nil {
-			return found
+		short, long := f.GetNames()
+		if t == ShortFlag {
+			if short == v {
+				return f
+			}
+		} else if t == LongFlag {
+			if long == v {
+				return f
+			}
 		}
 	}
 	return nil

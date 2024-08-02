@@ -1,7 +1,6 @@
 package parsing
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -9,7 +8,6 @@ import (
 func ExtractFlagsFromArgs(args ...string) (map[string][]string, error) {
 	flags := make(map[string][]string, 0)
 	var currentflag string
-	fmt.Println(args)
 	for _, i := range args {
 		if strings.HasPrefix(i, "--") {
 			a := i[2:]
