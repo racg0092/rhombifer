@@ -1,24 +1,26 @@
 * Priority:
-  - (x) Clean up project structure
-  - ( ) Make it to where it can be useful to acceptable standards within another project 
-  - ( ) Simplify design
-
-
 
 * Bugs
-  - Issue with parsing short hand flags
 
 * Design:
 
 * Features:
+  - Built in help function should print short flags as well
+  - Find ways to make it more appealing visually
 
 
 * Archive:
+
+** Priority
+  - (x) Clean up project structure
+  - (x) Make it to where it can be useful to acceptable standards within another project 
 
 ** Bugs
   - (x) Need to reference flags in FlagsLookUp
    -- (x) Flags need to be added by reference so do commands
   - (x) Nill direference when FindOne function in parsing is invoke (Caused by the change to pointers)
+  - Issue with parsing short hand flags
+  -- This was identify and fixed
 
 
 ** Features:
