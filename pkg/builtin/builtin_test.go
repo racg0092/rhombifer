@@ -31,7 +31,12 @@ func FugazziFlags(cmd *rhombifer.Command) {
 		Long:        "A very long long description of the flag",
 		ShortFormat: "f",
 	}
-	cmd.Flags = append(cmd.Flags, &foo)
+	bar := models.Flag{
+		Name:  "Bar",
+		Short: "A short description of bar",
+		Long:  "A very very long long description of the flag",
+	}
+	cmd.AddFlags(&foo, &bar)
 }
 
 func OsArgs(expand string) []string {
