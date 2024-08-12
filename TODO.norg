@@ -5,8 +5,6 @@
 * Design:
 
 * Features:
-  - Built in help function should print short flags as well
-  - Find ways to make it more appealing visually
 
 
 * Archive:
@@ -24,6 +22,7 @@
 
 
 ** Features:
+  - (x) Built in help function should print short flags as well
   - (x) Flag Parsing
     - (x) Short Hand Multi Flags (-rfh) should not allow for values
   --- (x) Parse values when single short hand

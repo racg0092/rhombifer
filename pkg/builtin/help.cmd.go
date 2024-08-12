@@ -81,7 +81,7 @@ func subHelp(cmd *rhombifer.Command) {
 	fmt.Fprintf(w, "%v", text.Bold("Flags:"))
 	if cmd.Flags != nil {
 		for _, f := range cmd.Flags {
-			fmt.Fprintf(w, "\n\t--%s\t%s", f.Name, f.Short)
+			fmt.Fprintf(w, "\n\t--%s\t-%s\t%s", f.Name, f.ShortFormat, f.Short)
 		}
 		fmt.Fprintf(w, "\n")
 		w.Flush()

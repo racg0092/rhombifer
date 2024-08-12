@@ -14,8 +14,9 @@ func FuggazziSubs() []rhombifer.Command {
 	commands := make([]rhombifer.Command, 0)
 
 	rcmd := rhombifer.Command{
-		Name:     "Recursive",
-		LongDesc: "Foo Bar and the woo woo gang do shit together",
+		Name:      "Recursive",
+		LongDesc:  "A very very long description. Of bla bla bla",
+		ShortDesc: "A short description",
 	}
 
 	commands = append(commands, rcmd)
@@ -25,9 +26,10 @@ func FuggazziSubs() []rhombifer.Command {
 
 func FugazziFlags(cmd *rhombifer.Command) {
 	foo := models.Flag{
-		Name:  "Foo",
-		Short: "Bla Bla Bla",
-		Long:  "Foo Foo Foof foo",
+		Name:        "Foo",
+		Short:       "A short description of foo",
+		Long:        "A very long long description of the flag",
+		ShortFormat: "f",
 	}
 	cmd.Flags = append(cmd.Flags, &foo)
 }
