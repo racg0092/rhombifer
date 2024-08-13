@@ -14,7 +14,7 @@ func FuggazziSubs() []rhombifer.Command {
 	commands := make([]rhombifer.Command, 0)
 
 	rcmd := rhombifer.Command{
-		Name:      "Recursive",
+		Name:      "recursive",
 		LongDesc:  "A very very long description. Of bla bla bla",
 		ShortDesc: "A short description",
 	}
