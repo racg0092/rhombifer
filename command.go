@@ -112,6 +112,7 @@ func (cmd *Command) CheckSubCommand(subcmd string) (*Command, error) {
 
 var (
 	ErrNoASubCommand = errors.New("invalid command format")
+	ErrNoSubCommands = errors.New("no subcommands to look through")
 )
 
 // Checks user input looking for sub commands until the last one is found

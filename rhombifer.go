@@ -80,11 +80,13 @@ func ExecCommand(cmd string, args ...string) error {
 	}
 
 	childcommand, args, err := DigThroughSubCommand(subcommand.Subs, args)
-	if err != nil {
+	if err != nil && err != ErrNoSubCommands {
 		return err
 	}
 
-	subcommand = childcommand
+	if childcommand != nil {
+		subcommand = childcommand
+	}
 
 	if subcommand.Run == nil {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
