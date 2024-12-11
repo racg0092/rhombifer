@@ -1,8 +1,12 @@
 package rhombifer
 
 import (
-	"github.com/racg0092/rhombifer/pkg/models"
+	"errors"
+	"fmt"
 	"strings"
+
+	"github.com/racg0092/rhombifer/pkg/models"
+	"github.com/racg0092/rhombifer/pkg/parsing"
 )
 
 type Run func(args ...string) error
@@ -57,6 +61,9 @@ func (cmd *Command) AddSub(command *Command) {
 	if cmd == nil {
 		panic("attempting to set sub command to a nil reference")
 	}
+	if cmd.Subs == nil {
+		cmd.Subs = make(map[string]*Command)
+	}
 	cmd.Subs[command.Name] = command
 }
 
@@ -86,4 +93,62 @@ func (cmd *Command) ValidateRequiredFlags(args []string) bool {
 // Get required flags
 func (cmd *Command) RequiredFlags() *[]*models.Flag {
 	return &cmd.requiredFlags
+}
+
+// Check if subcommand exists within the command
+func (cmd *Command) CheckSubCommand(subcmd string) (*Command, error) {
+	if cmd.Subs == nil {
+		return nil, errors.New("no sub sommands set for the command [" + cmd.Name + "]")
+	}
+
+	for _, scmd := range cmd.Subs {
+		if strings.ToLower(scmd.Name) == strings.ToLower(subcmd) {
+			return scmd, nil
+		}
+	}
+
+	return nil, errors.New("command " + subcmd + " not found")
+}
+
+var (
+	ErrNoASubCommand = errors.New("invalid command format")
+)
+
+// Checks user input looking for sub commands until the last one is found
+func DigThroughSubCommand(subcommands map[string]*Command, args []string) (*Command, []string, error) {
+	//TODO: Throughout test this logic
+	if len(subcommands) <= 0 {
+		return nil, args, fmt.Errorf("no subcommands to look through")
+	}
+
+	if len(args) <= 0 {
+		return nil, args, fmt.Errorf("no args found to compare")
+	}
+
+	sub := args[0]
+
+	validsubcommand := parsing.ValidSubCommand(sub)
+
+	if !validsubcommand {
+		return nil, args, ErrNoASubCommand
+	}
+
+	nargs := args[1:]
+
+	cmd, exists := subcommands[sub]
+	if !exists {
+		return nil, args, fmt.Errorf("command %s not found", sub)
+	}
+
+	if len(nargs) == 0 {
+		return cmd, nargs, nil
+	}
+
+	validsubcommand = parsing.ValidSubCommand(nargs[0])
+
+	if validsubcommand {
+		return DigThroughSubCommand(cmd.Subs, nargs)
+	}
+
+	return cmd, nargs, nil
 }

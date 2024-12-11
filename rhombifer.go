@@ -78,6 +78,14 @@ func ExecCommand(cmd string, args ...string) error {
 	if !found {
 		return fmt.Errorf("Command %s was not found", cmd)
 	}
+
+	childcommand, args, err := DigThroughSubCommand(subcommand.Subs, args)
+	if err != nil {
+		return err
+	}
+
+	subcommand = childcommand
+
 	if subcommand.Run == nil {
 		return fmt.Errorf("Sub command %s, does not have a valid function (Run)", subcommand.Name)
 	}

@@ -68,3 +68,18 @@ func FindOne(flags []*models.Flag, v string, t int) *models.Flag {
 	}
 	return nil
 }
+
+// Validates sub command format
+func ValidSubCommand(name string) bool {
+	if name[0] == '-' {
+		return false
+	}
+
+	frontchars := name[0:2]
+
+	if frontchars == "--" {
+		return false
+	}
+
+	return true
+}
