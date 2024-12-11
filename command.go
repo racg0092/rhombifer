@@ -119,7 +119,7 @@ var (
 func DigThroughSubCommand(subcommands map[string]*Command, args []string) (*Command, []string, error) {
 	//TODO: Throughout test this logic
 	if len(subcommands) <= 0 {
-		return nil, args, fmt.Errorf("no subcommands to look through")
+		return nil, args, ErrNoSubCommands
 	}
 
 	if len(args) <= 0 {
