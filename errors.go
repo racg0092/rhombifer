@@ -9,4 +9,6 @@ var (
 	ErroFlagHasNoValues = errs.NewError("flag has no values.")
 	ErroFoundFlagsIsNil = errs.NewError("found flags is <nil>.")
 	ErroFlagNotFound    = errs.NewError("flag not found.")
+
+	ErrNoSubCommandPassed = errs.NewError("no subcommand was passed")
 )

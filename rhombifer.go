@@ -80,7 +80,10 @@ func ExecCommand(cmd string, args ...string) error {
 	}
 
 	childcommand, args, err := DigThroughSubCommand(subcommand.Subs, args)
-	if err != nil && err != ErrNoSubCommands {
+
+	//HACK: implemented a new error to avoid failure when no sub command is used
+	// this should be handle different in the future
+	if err != nil && err != ErrNoSubCommands && err != ErrNoSubCommandPassed {
 		return err
 	}
 

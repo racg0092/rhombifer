@@ -123,7 +123,7 @@ func DigThroughSubCommand(subcommands map[string]*Command, args []string) (*Comm
 	}
 
 	if len(args) <= 0 {
-		return nil, args, fmt.Errorf("no args found to compare")
+		return nil, args, ErrNoSubCommandPassed
 	}
 
 	sub := args[0]

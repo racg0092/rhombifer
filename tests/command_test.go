@@ -80,4 +80,10 @@ func TestSubCommand(t *testing.T) {
 	if err := rhombifer.ExecCommand("cmd", osargs...); err != nil {
 		t.Error(err)
 	}
+
+	t.Run("no sub specified", func(t *testing.T) {
+		if err := rhombifer.ExecCommand("cmd"); err != nil {
+			t.Error(err)
+		}
+	})
 }
