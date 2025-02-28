@@ -68,6 +68,7 @@ func HelpCommand(short, long *string) rhombifer.Command {
 	return help
 }
 
+// HACK: this should be a recursive function
 // Handles help function for sub commands of the root command
 func subHelp(cmd *rhombifer.Command) {
 	fmt.Print("\n")
@@ -79,6 +80,17 @@ func subHelp(cmd *rhombifer.Command) {
 	}
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
 	fmt.Fprintf(w, "%v", text.Bold("Flags:"))
+
+	if cmd.Subs != nil {
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+		fmt.Fprintf(w, "\n%v", text.Bold("Commands"))
+		for _, sub := range cmd.Subs {
+			fmt.Fprintf(w, "\n\t%s\t%s", sub.Name, sub.ShortDesc)
+		}
+		fmt.Fprintf(w, "\n\n")
+		w.Flush()
+	}
+
 	if cmd.Flags != nil {
 		for _, f := range cmd.Flags {
 			if f.ShortFormat != "" {
@@ -90,4 +102,5 @@ func subHelp(cmd *rhombifer.Command) {
 		fmt.Fprintf(w, "\n")
 		w.Flush()
 	}
+
 }
