@@ -1,6 +1,9 @@
 package models
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Flag struct {
 	// flag name
@@ -51,3 +54,21 @@ func (f *Flag) AddValues(args ...string) error {
 func (f *Flag) GetNames() (short, long string) {
 	return f.ShortFormat, f.Name
 }
+
+// Grabs the first value of the flag
+func (f Flag) GetSingleValue() (string, error) {
+	if f.Values == nil {
+		return "", ErrNilValues
+	}
+
+	if len(f.Values) < 0 {
+		return "", ErrNoValues
+	}
+
+	return f.Values[0], nil
+}
+
+var (
+	ErrNoValues  = errors.New("no values found on flag")
+	ErrNilValues = errors.New("values is <nil>")
+)
