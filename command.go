@@ -67,6 +67,18 @@ func (cmd *Command) AddSub(command *Command) {
 	cmd.Subs[command.Name] = command
 }
 
+// Adds subs commands to the command
+func (cmd *Command) AddSubs(subs ...*Command) {
+	if len(subs) > 0 {
+		if cmd.Subs == nil {
+			cmd.Subs = make(map[string]*Command)
+		}
+		for _, s := range subs {
+			cmd.Subs[s.Name] = s
+		}
+	}
+}
+
 // Validates if required flags are found in the input string. If any required flag is missing it returns false
 // otherwise true. If no flags are required it returns true.
 func (cmd *Command) ValidateRequiredFlags(args []string) bool {
