@@ -68,6 +68,8 @@ func (f Flag) GetSingleValue() (string, error) {
 	return f.Values[0], nil
 }
 
+//TODO: add a validation function for type maybe
+
 var (
 	ErrNoValues  = errors.New("no values found on flag")
 	ErrNilValues = errors.New("values is <nil>")
