@@ -52,3 +52,7 @@ func ApplyHexColor(t, hex string) (string, error) {
 	}
 	return fmt.Sprintf("\033[38;2;%d;%d;%dm%s\033[0m", rgb.RED, rgb.GREEN, rgb.BLUE, t), nil
 }
+
+func ApplyRGB(rgb RGB, s string) string {
+	return fmt.Sprintf("\033[38;2;%d;%d;%dm%s\033[0m", rgb.RED, rgb.GREEN, rgb.BLUE, s)
+}
